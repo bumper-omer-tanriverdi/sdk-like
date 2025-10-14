@@ -1,0 +1,70 @@
+name: Build SDK on version bump
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - package.json
+      - rollup.config.mjs
+      - src/**
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Determine if version changed
+        id: ver
+        shell: bash
+        run: |
+          # Tag push ise her durumda derle
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "new=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          NEW=$(jq -r .version package.json)
+          # Önceki committeki version'ı al (ilk committe boş olabilir)
+          OLD=$(git show HEAD^:package.json 2>/dev/null | jq -r '.version // ""')
+          echo "old=$OLD" >> $GITHUB_OUTPUT
+          echo "new=$NEW" >> $GITHUB_OUTPUT
+
+          if [[ "$NEW" != "$OLD" ]]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Node
+        if: steps.ver.outputs.changed == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        if: steps.ver.outputs.changed == 'true'
+        run: npm ci
+
+      - name: Build (Rollup)
+        if: steps.ver.outputs.changed == 'true'
+        run: npm run build
+
+      - name: Upload dist as artifact
+        if: steps.ver.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ steps.ver.outputs.new }}
+          path: dist/
+          if-no-files-found: error
