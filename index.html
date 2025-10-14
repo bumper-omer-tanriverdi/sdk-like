@@ -7,11 +7,15 @@
 </head>
 <body>
     <h1>Hello World</h1>
-    <div id="myAppWrapper"></div>
+    <div style="background-color: orange; padding: 20px; border-radius: 32px">
+        <div id="myAppWrapper"></div>
+    <div id="myCustomDiv"></div>
+
+    </div>
 </body>
-<script src="/dist/myapp-sdk-1.0.9.min.js"></script>
+<script src="/dist/myapp-sdk-1.0.13.min.js"></script>
 <script>
-  MyAppSDK.init({ token: 'abc' })
+  MyAppSDK.init({ targetId: 'myCustomDiv', theme: 'dark' })
   console.log(MyAppSDK.version, MyAppSDK)
 </script>
 </html>
