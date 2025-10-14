@@ -55,7 +55,9 @@ jobs:
 
       - name: Install
         if: steps.ver.outputs.changed == 'true'
-        run: npm install
+        run: |
+          npm cache clean --force
+          npm install
 
       - name: Build (Rollup)
         if: steps.ver.outputs.changed == 'true'
