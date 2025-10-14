@@ -55,7 +55,7 @@ jobs:
 
       - name: Install
         if: steps.ver.outputs.changed == 'true'
-        run: npm ci
+        run: npm install
 
       - name: Build (Rollup)
         if: steps.ver.outputs.changed == 'true'
