@@ -2,7 +2,7 @@
   "name": "myapp-sdk",
   "version": "1.0.7",
   "type": "module",
-  "main": "dist/myapp-sdk-1.0.0.min.js",
+  "main": "dist/myapp-sdk.min.js",
   "files": ["dist"],
   "scripts": {
     "build": "rollup -c",
