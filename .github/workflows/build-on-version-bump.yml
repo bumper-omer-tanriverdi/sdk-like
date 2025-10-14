@@ -53,7 +53,7 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Install
+      - name: Install dependencies
         if: steps.ver.outputs.changed == 'true'
         run: |
           npm cache clean --force
@@ -61,14 +61,19 @@ jobs:
 
       - name: Build (Rollup)
         if: steps.ver.outputs.changed == 'true'
+        run: npm run build
+
+      - name: Verify build output
+        if: steps.ver.outputs.changed == 'true'
         run: |
-          npm cache clean --force
-          npm install
+          echo "Build output:"
+          ls -la dist/
+          echo "Expected file: myapp-sdk-${{ steps.ver.outputs.new }}.min.js"
 
       - name: Upload dist as artifact
         if: steps.ver.outputs.changed == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: dist-${{ steps.ver.outputs.new }}
-          path: dist/
+          path: dist/**/*
           if-no-files-found: error
