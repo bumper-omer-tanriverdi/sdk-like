@@ -1,6 +1,6 @@
 {
   "name": "myapp-sdk",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "type": "module",
   "main": "dist/myapp-sdk.min.js",
   "files": ["dist"],
