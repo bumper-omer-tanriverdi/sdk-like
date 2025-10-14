@@ -61,7 +61,9 @@ jobs:
 
       - name: Build (Rollup)
         if: steps.ver.outputs.changed == 'true'
-        run: npm run build
+        run: |
+          npm cache clean --force
+          npm install
 
       - name: Upload dist as artifact
         if: steps.ver.outputs.changed == 'true'
