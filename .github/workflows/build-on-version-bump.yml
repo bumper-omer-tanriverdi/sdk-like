@@ -56,7 +56,7 @@ jobs:
       - name: Install dependencies
         if: steps.ver.outputs.changed == 'true'
         run: |
-          npm cache clean --force
+          rm -rf node_modules package-lock.json
           npm install
 
       - name: Build (Rollup)
